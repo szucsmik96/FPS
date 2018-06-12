@@ -31,7 +31,7 @@ public class Explosion : MonoBehaviour {
 	}
 
 	void OnCollisionEnter(Collision collision){
-		Debug.Log (collision.gameObject.tag);
+		//Debug.Log (collision.gameObject.tag);
 		if (collision.gameObject.tag == "Enemy") {
 			collision.gameObject.tag = "Untagged";
 			Instantiate(fireEffect, collision.transform.position, Quaternion.identity);

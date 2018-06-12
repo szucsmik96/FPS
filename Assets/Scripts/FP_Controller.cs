@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class FP_Controller : MonoBehaviour {
 
+	Actions actions;
+	PlayerController playerController;
+
 	private CharacterController characterController;
+	Animator animator;
 
 	public float movementSpeed = 5.0f;
 	public float mouseSensitivity = 5.0f;
@@ -17,6 +21,10 @@ public class FP_Controller : MonoBehaviour {
 	void Start () {
 		Screen.lockCursor = true;
 		characterController = GetComponent<CharacterController> ();
+		actions = GetComponentInChildren<Actions> ();
+		playerController = GetComponentInChildren<PlayerController> ();
+		playerController.SetArsenal ("Rifle");
+		animator = GetComponentInChildren<Animator> ();
 	}
 	
 	// Update is called once per frame
@@ -33,6 +41,7 @@ public class FP_Controller : MonoBehaviour {
 		verticalVelocity += Physics.gravity.y * Time.deltaTime;
 		if (characterController.isGrounded && Input.GetButton("Jump")) {
 			verticalVelocity = jumpSpeed;
+			actions.Jump ();
 		}
 
 		Vector3 speed = new Vector3 (sideSpeed, verticalVelocity, forwardSpeed);
@@ -40,11 +49,16 @@ public class FP_Controller : MonoBehaviour {
 		speed = transform.rotation * speed;
 
 		if (Input.GetKey (KeyCode.LeftShift)) {
+			forwardSpeed = forwardSpeed * 2;
 			speed = speed * 2;
 		}
 
 		characterController.Move(speed * Time.deltaTime);
 
+		animator.SetFloat ("Speed", Mathf.Abs(forwardSpeed));
 
+		if (Mathf.Abs(forwardSpeed) > 0 || Mathf.Abs(sideSpeed) >0) {
+			animator.SetBool("Aiming", false);
+		}
 	}
 }

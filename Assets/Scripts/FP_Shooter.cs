@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class FP_Shooter : MonoBehaviour {
 
+	Actions actions;
+
 	float Gcooldown = 1f;
 	float GcooldownRemaining = 0f;
 
@@ -29,8 +31,11 @@ public class FP_Shooter : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		line = gameObject.GetComponentInChildren<LineRenderer> ();
-		laserSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild (0);
+		//laserSpawn = transform.GetChild(0).transform.GetChild(0).transform.GetChild (0);
+		laserSpawn = transform.GetChild(0).transform.GetChild(0);
+		//Debug.Log (laserSpawn);
 		line.enabled = false;
+		actions = GetComponentInChildren<Actions> ();
 	}
 	
 	// Update is called once per frame
@@ -49,17 +54,19 @@ public class FP_Shooter : MonoBehaviour {
 		}
 		if(Input.GetMouseButtonDown(0) && BcooldownRemaining <0){
 			BcooldownRemaining = Bcooldown;
+			actions.Attack ();
 			Ray ray = new Ray (Camera.main.transform.position, Camera.main.transform.forward);
 			RaycastHit hitinfo;
 			if(Physics.Raycast(ray, out hitinfo, range)){ 
 				Vector3 hitPoint = hitinfo.point;
 				GameObject go = hitinfo.collider.gameObject;
-				Debug.Log (go.name);
+				//Debug.Log (go.name);
 				FireLaser (ray, hitPoint);
 				if (go.tag != "Plane") {
 					GameObject bullet = (GameObject)Instantiate (bulletPrefab, hitPoint, Quaternion.identity);
 				}
 			}
+			Debug.Log (laserSpawn.transform.position);
 		}
 		if (Input.GetKeyDown (KeyCode.F) && RcooldownRemaining <0) {
 			RcooldownRemaining = Rcooldown;
